@@ -9,7 +9,6 @@ jobs:
     runs-on: windows-latest
     env:
       tag: v1.0.0
-      script: connector
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -37,13 +36,13 @@ jobs:
           pip install pyinstaller
       
       - name: Create Executable
-        run: pyinstaller --onefile src/${{ env.script }}.py --name EffectvUpload
+        run: pyinstaller --onefile src/connector.py --name EffectvUpload
 
       - name: Publish a New Release
         id: release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: dist/${{ env.script }}.exe, config.ini, README.md
+          artifacts: dist/EffectvUpload.exe, config.ini.template, README.md
           tag: ${{ env.tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
