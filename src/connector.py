@@ -1,6 +1,7 @@
 from wix import WixClient
 from ad_delivery import ComcastClient
 from datetime import datetime
+from setup import setup
 import configparser
 import logging
 import os
@@ -10,6 +11,9 @@ logging.basicConfig(
     filename=f"log/{now}.log", 
     level=logging.DEBUG
 )
+
+# first time setup checks
+setup()
 
 config = configparser.ConfigParser(interpolation=None)
 config.read('config.ini')

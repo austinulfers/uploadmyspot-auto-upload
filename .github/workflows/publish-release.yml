@@ -1,14 +1,12 @@
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   deploy:
     runs-on: windows-latest
     env:
-      tag: v1.0.1
+      tag: v1.0.2
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -46,7 +44,7 @@ jobs:
       - name: Zip Necessary Files
         uses: papeloto/action-zip@v1
         with:
-          files: tmp/ log/ dist/EffectvUpload.exe config.ini.template README.md
+          files: dist/EffectvUpload.exe config.ini.template README.md
           dest: dist/EffectUpload.zip
 
       - name: Publish a New Release
@@ -54,6 +52,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: dist/EffectUpload.zip
+          artifacts: dist/EffectUpload_${{ env.tag }}.zip
           tag: ${{ env.tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
