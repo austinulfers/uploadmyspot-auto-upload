@@ -52,6 +52,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: dist/EffectUpload_${{ env.tag }}.zip, dist/EffectUpload.exe
+          artifacts: dist/EffectUpload_${{ env.tag }}.zip, dist/EffectvUpload.exe
           tag: ${{ env.tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
