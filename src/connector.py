@@ -61,5 +61,4 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print(e)
-        input("Application failed for an unknown reason. Press any button to exit.")
-        raise e
+        input("Application failed. Read above information to determine root cause.")
