@@ -6,15 +6,6 @@ import configparser
 import logging
 import os
 
-now = datetime.now().strftime("%d-%m-%Y_%H-%M")
-logging.basicConfig(
-    filename=f"log/{now}.log", 
-    level=logging.DEBUG
-)
-
-config = configparser.ConfigParser(interpolation=None)
-config.read('config.ini')
-
 def main():
     """Executes all main functions.
     """    
@@ -56,6 +47,16 @@ def main():
 if __name__ == "__main__":
     try:
         setup()
+
+        now = datetime.now().strftime("%d-%m-%Y_%H-%M")
+        logging.basicConfig(
+            filename=f"log/{now}.log", 
+            level=logging.DEBUG
+        )
+
+        config = configparser.ConfigParser(interpolation=None)
+        config.read('config.ini')   
+
         main()
     except Exception as e:
         print(e)
