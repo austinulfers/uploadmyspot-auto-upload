@@ -54,6 +54,7 @@ if __name__ == "__main__":
             level=logging.DEBUG
         )
 
+        global config
         config = configparser.ConfigParser(interpolation=None)
         config.read('config.ini')   
 
