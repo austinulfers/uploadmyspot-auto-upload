@@ -64,7 +64,7 @@ class WixClient:
         ).click()
 
     @staticmethod
-    def parse_download(filepath: str = "tmp//Upload.csv", remove: bool = False) -> list:
+    def parse_download(filepath: str = "tmp//Upload.csv", remove: bool = False) -> list:        
         """Parses the download csv from wix and returns the content as a list of
         spots ready for upload.
 
