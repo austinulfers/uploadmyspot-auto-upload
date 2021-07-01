@@ -45,7 +45,7 @@ jobs:
         uses: papeloto/action-zip@v1
         with:
           files: dist/EffectvUpload.exe config.ini.template README.md
-          dest: dist/EffectUpload.zip
+          dest: dist/EffectUpload_${{ env.tag }}.zip
 
       - name: Publish a New Release
         id: release
