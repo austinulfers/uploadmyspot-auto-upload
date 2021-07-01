@@ -22,3 +22,6 @@ def setup():
             logging.debug("config.ini.template file found")
             raise Exception("Please ensure to add all credentials to config file and rename to 'config.ini'")
         raise Exception("'config.ini' file not found.")
+
+if __name__ == "__main__":
+    setup()

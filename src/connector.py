@@ -12,9 +12,6 @@ logging.basicConfig(
     level=logging.DEBUG
 )
 
-# first time setup checks
-setup()
-
 config = configparser.ConfigParser(interpolation=None)
 config.read('config.ini')
 
@@ -58,6 +55,7 @@ def main():
 
 if __name__ == "__main__":
     try:
+        setup()
         main()
     except Exception as e:
         print(e)
