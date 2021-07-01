@@ -34,7 +34,7 @@ jobs:
           pip install pyinstaller
       
       - name: Create Executable
-        run: pyinstaller --onefile src/connector.py --name EffectvUpload
+        run: pyinstaller --onefile src/connector.py --name EffectvUpload_${{ env.tag }}
 
       - name: Create Directories
         run: |
@@ -44,7 +44,7 @@ jobs:
       - name: Zip Necessary Files
         uses: papeloto/action-zip@v1
         with:
-          files: dist/EffectvUpload.exe config.ini.template README.md
+          files: dist/EffectvUpload_${{ env.tag }}.exe config.ini.template README.md
           dest: dist/EffectUpload_${{ env.tag }}.zip
 
       - name: Publish a New Release
@@ -52,6 +52,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: dist/EffectUpload_${{ env.tag }}.zip, dist/EffectvUpload.exe
+          artifacts: dist/EffectUpload_${{ env.tag }}.zip, dist/EffectvUpload_${{ env.tag }}.exe
           tag: ${{ env.tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
