@@ -83,27 +83,28 @@ class WixClient:
                 break
             retry -= 1
             time.sleep(1)
-        csvfile = open(filepath, 'r')
+        csvfile = open(filepath, 'r', encoding='utf-8-sig')
         reader = csv.DictReader(csvfile)
         all_spots = []
         for row in reader:
-            spot = {
-                "Agency": row["Agency"],
-                "Client": row["Client"],
-                "First Name": row["First Name"],
-                "Last Name": row["Last Name"],
-                "Destination": row["Destination"],
-                "Additional Recipients": \
-                    list(filter(None, [row["Email 1"], row["Email 2"]]))
-            }
-            for i in range(1, 11):
-                i = str(i)
-                if row[f"Title {i}"]:
-                    l = row[f"Length {i}"]
-                    spot.update({
-                        "Title": row[f"Title {i}"],
-                        "Length": ["0" + l if l[0] == ":"  else l][0],
-                        "ISCI": row[f"ID {i}"]
-                    })
-                    all_spots.append(spot.copy())
+            if row["Completed"] == "":
+                spot = {
+                    "Agency": row["Agency"],
+                    "Client": row["Client"],
+                    "First Name": row["First Name"],
+                    "Last Name": row["Last Name"],
+                    "Destination": row["Destination"],
+                    "Additional Recipients": \
+                        list(filter(None, [row["Email 1"], row["Email 2"]]))
+                }
+                for i in range(1, 11):
+                    i = str(i)
+                    if row[f"Title {i}"]:
+                        l = row[f"Length {i}"]
+                        spot.update({
+                            "Title": row[f"Title {i}"],
+                            "Length": ["0" + l if l[0] == ":"  else l][0],
+                            "ISCI": row[f"ID {i}"]
+                        })
+                        all_spots.append(spot.copy())
         return all_spots, filepath
