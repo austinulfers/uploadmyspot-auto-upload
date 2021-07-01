@@ -18,7 +18,7 @@ def main():
         wix.download()
     all_spots, filepath = WixClient.parse_download()
 
-    if wix:
+    if "wix" in locals():
         # open new tab so the wix content manager stays open
         wix.driver.execute_script("window.open('');")
         wix.driver.switch_to.window(wix.driver.window_handles[1])
