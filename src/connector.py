@@ -9,20 +9,22 @@ import os
 def main():
     """Executes all main functions.
     """    
-    wix = WixClient()
     if not os.path.exists(os.path.join("tmp", "Upload.csv")):
+        wix = WixClient()
         wix.login(
             config["CREDENTIALS"]["WIX_USERNAME"], 
             config["CREDENTIALS"]["WIX_PASSWORD"]
         )
         wix.download()
-    all_spots, filepath = wix.parse_download()
+    all_spots, filepath = WixClient.parse_download()
 
-    # open new tab so the wix content manager stays open
-    wix.driver.execute_script("window.open('');")
-    wix.driver.switch_to.window(wix.driver.window_handles[1])
-
-    comcast = ComcastClient(wix.driver)
+    if wix:
+        # open new tab so the wix content manager stays open
+        wix.driver.execute_script("window.open('');")
+        wix.driver.switch_to.window(wix.driver.window_handles[1])
+        comcast = ComcastClient(wix.driver)
+    else:
+        comcast = ComcastClient()
     comcast.login(
         config["CREDENTIALS"]["COMCAST_USERNAME"],
         config["CREDENTIALS"]["COMCAST_PASSWORD"]

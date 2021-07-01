@@ -2,19 +2,31 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 import logging
 import time
+import os
 
 URL = "https://effectv.advertising.comcasttechnologysolutions.com/cad/submit"
 
 class ComcastClient:
 
-    def __init__(self, driver: webdriver.chrome.webdriver.WebDriver = None):
+    def __init__(self, driver: webdriver.chrome.webdriver.WebDriver = None, folder: str = "tmp"):
         """Initializes the client and goes to the upload url.
 
         Args:
             driver (webdriver.chrome.webdriver.WebDriver, optional): A chrome webdriver. Defaults to None.
+            folder (str): folder within cwd to store downloaded files.
         """ 
-        if driver is None:      
-            self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        if driver is None:
+            options = webdriver.ChromeOptions()
+            prefs = {
+                "download.default_directory" : os.path.join(os.getcwd(), folder)
+            }
+            options.add_experimental_option("prefs", prefs) 
+            options.add_argument('log-level=3')
+            options.add_argument("--start-maximized")
+            self.driver = webdriver.Chrome(
+                ChromeDriverManager().install(), 
+                chrome_options=options
+            )
         else:
             self.driver = driver
         self.driver.get(URL)
@@ -99,7 +111,7 @@ class ComcastClient:
             duration_number = "2"
         else:
             duration_number = self._duration_option(duration)
-        time.sleep(0.25)
+        time.sleep(0.5)
         self.driver.implicitly_wait(2)
         self.driver.find_element_by_id(
             f"duration_{duration_number}_submit_option"

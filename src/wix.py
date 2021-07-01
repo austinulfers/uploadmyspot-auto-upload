@@ -63,7 +63,8 @@ class WixClient:
             '/html/body/div[8]/div/div/div/div/div/div[3]/form/button'
         ).click()
 
-    def parse_download(self, file: str = "Upload.csv", remove: bool = False) -> list:
+    @staticmethod
+    def parse_download(filepath: str = "tmp//Upload.csv", remove: bool = False) -> list:
         """Parses the download csv from wix and returns the content as a list of
         spots ready for upload.
 
@@ -75,8 +76,7 @@ class WixClient:
 
         Returns:
             list: list of spots ready for upload
-        """        
-        filepath = os.path.join(self.download_folder, file)
+        """
         retry = 5
         while retry > 0:
             if os.path.exists(filepath):
