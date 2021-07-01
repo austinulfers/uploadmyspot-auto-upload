@@ -39,11 +39,11 @@ def main():
             isci=spot["ISCI"],
             recipients=spot["Additional Recipients"]
         )
-        input(f"({i + 1} / {num_spots}) Press any button to continue once the spot has been submitted.")
+        input(f"({i + 1} / {num_spots}) Press enter to continue once the spot has been submitted.")
         comcast.clear()
-    input("Application Successfull. Press any button to delete CSV.")
+    input("Application Successfull. Press enter to delete CSV.")
     os.remove(filepath)
-    input("CSV Deleted. Press any button to close the application.")
+    input("CSV Deleted. Press enter to close the application.")
     comcast.driver.close()
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ class WixClient:
         self.driver.find_element_by_xpath(
             "/html/body/login-dialog/div/login/div/form/div[3]/div[1]/div[3]/div/button"
         ).click()
-        input("Press any button once logged in to continue.")
+        input("Press enter once logged in to continue.")
 
     def download(self):
         """Downloads the data from content manager as a csv document.
