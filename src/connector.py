@@ -31,6 +31,8 @@ def main():
     )
     num_spots = len(all_spots)
     for i, spot in enumerate(all_spots):
+        if not spot["Agency"]:
+            spot["Agency"] = "NA"
         comcast.upload(
             client=spot["Client"],
             title=spot["Title"],
