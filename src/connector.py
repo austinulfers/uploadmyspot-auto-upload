@@ -39,7 +39,7 @@ def main():
             duration=spot["Length"],
             agency=spot["Agency"],
             isci=spot["ISCI"],
-            recipients=spot["Additional Recipients"]
+            recipients=set(spot["Additional Recipients"])
         )
         input(f"({i + 1} / {num_spots}) Press enter to continue once the spot has been submitted.")
         comcast.clear()
