@@ -43,10 +43,8 @@ def main():
         )
         input(f"({i + 1} / {num_spots}) Press enter to continue once the spot has been submitted.")
         comcast.clear()
-    input("Application Successfull. Press enter to delete CSV.")
+    input("Application Successfull. Press enter to delete CSV and end the application.")
     os.remove(filepath)
-    input("CSV Deleted. Press enter to close the application.")
-    comcast.driver.close()
 
 if __name__ == "__main__":
     try:
