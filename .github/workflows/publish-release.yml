@@ -6,7 +6,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     env:
-      tag: v1.0.7
+      tag: v1.0.8
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
           pip install pyinstaller
       
       - name: Create Executable
-        run: pyinstaller --onefile src/connector.py --name EffectvUpload_${{ env.tag }}
+        run: pyinstaller --onefile src/connector.py --name EffectvUpload_${{ env.tag }} --icon img/logo.ico
 
       - name: Create Directories
         run: |
