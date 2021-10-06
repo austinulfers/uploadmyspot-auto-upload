@@ -86,6 +86,7 @@ class WixClient:
         csvfile = open(filepath, 'r', encoding='utf-8-sig')
         reader = csv.DictReader(csvfile)
         all_spots = []
+        id_set = set()
         for row in reader:
             if row["Completed"] == "":
                 spot = {
@@ -99,12 +100,15 @@ class WixClient:
                 }
                 for i in range(1, 11):
                     i = str(i)
-                    if row[f"Title {i}"]:
-                        l = row[f"Length {i}"]
-                        spot.update({
-                            "Title": row[f"Title {i}"],
-                            "Length": ["0" + l if l[0] == ":"  else l][0],
-                            "ISCI": row[f"ID {i}"]
-                        })
+                    l = row[f"Length {i}"]
+                    spot.update({
+                        "Title": row[f"Title {i}"],
+                        "Length": [
+                            "0" + l if l[0] == ":"  else l][0] if row[f"Title {i}"] else "",
+                        "ISCI": row[f"ID {i}"]
+                    })
+                    id = "|".join(str(x) for x in spot.values())
+                    if id not in id_set:
+                        id_set.add(id)
                         all_spots.append(spot.copy())
         return all_spots, filepath

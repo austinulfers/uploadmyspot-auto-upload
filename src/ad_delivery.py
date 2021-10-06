@@ -104,18 +104,19 @@ class ComcastClient:
         self.driver.find_element_by_id(
             "destination_0_submit_option"
         ).click()
-        self.driver.find_element_by_id(
-            "duration_submit_select"
-        ).click()
-        if duration == "Other":
-            duration_number = "2"
-        else:
-            duration_number = self._duration_option(duration)
-        time.sleep(0.5)
-        self.driver.implicitly_wait(2)
-        self.driver.find_element_by_id(
-            f"duration_{duration_number}_submit_option"
-        ).click()
+        if duration != "":
+            self.driver.find_element_by_id(
+                "duration_submit_select"
+            ).click()
+            if duration == "Other":
+                duration_number = "2"
+            else:
+                duration_number = self._duration_option(duration)
+            time.sleep(0.5)
+            self.driver.implicitly_wait(2)
+            self.driver.find_element_by_id(
+                f"duration_{duration_number}_submit_option"
+            ).click()
         self.driver.find_element_by_id(
             "description_submit_input"
         ).send_keys(description)
