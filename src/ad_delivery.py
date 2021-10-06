@@ -37,10 +37,25 @@ class ComcastClient:
         Args:
             user (str): username
             pword (str): password
-        """        
-        self.driver.find_element_by_id("email_login_input").send_keys(user)
-        self.driver.find_element_by_id("password_login_input").send_keys(pword)
-        self.driver.find_element_by_id("login_login_button").click()
+        """
+        count = 5
+        while count > 0:
+            try:      
+                self.driver.find_element_by_id(
+                    "email_login_input"
+                ).send_keys(user)
+                self.driver.find_element_by_id(
+                    "password_login_input"
+                ).send_keys(pword)
+                self.driver.find_element_by_id(
+                    "login_login_button"
+                ).click()
+                break
+            except:
+                print(f"Login Page Not Found. {str(count)} attempts remaining.")
+                time.sleep(2)
+                self.driver.refresh()
+                count -= 1
 
     def clear(self):
         """Clears all text input fields on upload page.
