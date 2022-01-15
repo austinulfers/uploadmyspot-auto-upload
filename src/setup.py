@@ -23,5 +23,9 @@ def setup():
             raise Exception("Please ensure to add all credentials to config file and rename to 'config.ini'")
         raise Exception("'config.ini' file not found.")
 
+    if not os.path.isfile("tmp/Upload.csv"):
+        logging.fatal("tmp/Upload.csv not found.")
+        raise Exception("'tmp/Upload.csv' file not found.")
+
 if __name__ == "__main__":
     setup()

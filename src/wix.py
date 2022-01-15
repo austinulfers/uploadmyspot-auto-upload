@@ -11,12 +11,15 @@ URL = "https://manage.wix.com/dashboard/f332cb86-352a-492f-b04e-c963b4475923/dat
 class WixClient:
 
     def __init__(self, driver: webdriver.chrome.webdriver.WebDriver = None, folder: str = "tmp"):
-        """Initializes the client and goes to the upload url.
+        """Initializes the client and goes to the upload url. This class is 
+        deprecated and will be removed on the next major release.
 
         Args:
-            driver (webdriver.chrome.webdriver.WebDriver, optional): A chrome webdriver. Defaults to None.
+            driver (webdriver.chrome.webdriver.WebDriver, optional): A chrome 
+                webdriver. Defaults to None.
             folder (str): folder within cwd to store downloaded files.
-        """ 
+        """
+        logging.warn("The wix client is deprecated and will be removed on the next major release.") 
         self.download_folder = folder
         if driver is None:
             options = webdriver.ChromeOptions()
