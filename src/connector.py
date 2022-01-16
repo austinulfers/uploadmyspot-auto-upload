@@ -1,7 +1,7 @@
 from wix import WixClient
 from ad_delivery import ComcastClient
 from datetime import datetime
-from setup import setup
+from setup import setup, check_videos
 import configparser
 import logging
 import os
@@ -35,6 +35,7 @@ def main():
 if __name__ == "__main__":
     try:
         setup()
+        check_videos()
 
         now = datetime.now().strftime("%d-%m-%Y_%H-%M")
         logging.basicConfig(
