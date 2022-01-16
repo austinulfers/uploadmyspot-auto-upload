@@ -36,6 +36,17 @@ def setup():
         raise Exception("'tmp/Upload.csv' file not found.")
 
 def check_videos(folder: str = None):
+    """Checks the videos in the above directory and if they don't pass, they get
+    relocated to the failed videos folder that is created if it doesn't already
+    exist.
+
+    Args:
+        folder (str, optional): Folder to look for videos. Defaults to directory
+            above current working directory.
+
+    Raises:
+        Exception: Occurs when any video doesn't pass the specs.
+    """    
     if folder is None:
         folder = os.path.dirname(os.getcwd())
     logging.debug(f"Checking videos at {folder}.")
@@ -81,14 +92,15 @@ def check_videos(folder: str = None):
         }
         info_agg.append(info)
         if not passed:
-            logging.debug(f"{path} failed check.")
+            full_path = folder + video_path
+            logging.debug(f"{full_path} failed check.")
             new_folder = os.path.join(folder, "_FailedChecks")
             if not os.path.isdir(new_folder):
                 logging.warning("_FailedChecks folder not found. Creating now.")
                 os.mkdir(new_folder)
             new_file_location = os.path.join(new_folder, video_path.split("\\")[-1])
-            logging.debug(f"Moving {path} to {new_file_location}.")
-            shutil.move(path, new_file_location)
+            logging.debug(f"Moving {full_path} to {new_file_location}.")
+            shutil.move(full_path, new_file_location)
     logging.info(json.dumps(info_agg, indent=4))
     df = pd.DataFrame(info_agg)
     failed = df[df["Passed"] == False]
@@ -97,7 +109,6 @@ def check_videos(folder: str = None):
             df_str = failed.to_string().split("\n")
             raise Exception(f"The Following Videos Failed the Checks:\n{chr(10).join(df_str)}")
             
-
 if __name__ == "__main__":
     setup()
     check_videos(r"C:\Users\Austin Ulfers\Desktop\Uploads\Uploads")
