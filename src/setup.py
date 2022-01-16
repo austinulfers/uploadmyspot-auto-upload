@@ -82,6 +82,16 @@ def check_videos(folder: str = None):
             elif round(fps, 2) == 59.94:
                 if width == 1280 and height == 720:
                     passed = True
+        if not passed:
+            full_path = folder + video_path
+            logging.debug(f"{full_path} failed check.")
+            new_folder = os.path.join(os.path.dirname(full_path), "_Failed")
+            if not os.path.isdir(new_folder):
+                logging.info(f"_Failed folder not found. Creating here {new_folder}.")
+                os.mkdir(new_folder)
+            new_file_location = os.path.join(new_folder, video_path.split("\\")[-1])
+            logging.debug(f"Moving {full_path} to {new_file_location}.")
+            shutil.move(full_path, new_file_location)
         info = {
             "Path": video_path,
             "Dimensions": dimensions,
@@ -92,16 +102,6 @@ def check_videos(folder: str = None):
             "Passed": passed
         }
         info_agg.append(info)
-        if not passed:
-            full_path = folder + video_path
-            logging.debug(f"{full_path} failed check.")
-            new_folder = os.path.join(folder, "_FailedChecks")
-            if not os.path.isdir(new_folder):
-                logging.warning("_FailedChecks folder not found. Creating now.")
-                os.mkdir(new_folder)
-            new_file_location = os.path.join(new_folder, video_path.split("\\")[-1])
-            logging.debug(f"Moving {full_path} to {new_file_location}.")
-            shutil.move(full_path, new_file_location)
     logging.info(json.dumps(info_agg, indent=4))
     df = pd.DataFrame(info_agg)
     failed = df[df["Passed"] == False]
@@ -112,4 +112,3 @@ def check_videos(folder: str = None):
             
 if __name__ == "__main__":
     setup()
-    check_videos(r"C:\Users\Austin Ulfers\Desktop\Uploads\Uploads")
