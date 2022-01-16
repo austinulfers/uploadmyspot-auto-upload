@@ -67,6 +67,7 @@ def check_videos(folder: str = None):
         width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
         dimensions = (width, height)
         length = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+        video.release()
         duration = length / fps
         remainder = length % fps
         if remainder > (fps / 2):
