@@ -3,6 +3,7 @@ import logging
 import cv2
 import json
 import pandas as pd
+import shutil
 
 ALLOWABLE_VIDEO_FORMATS = ["mp4", "mov", "avi", "wmv"]
 ALLOWABLE_VIDEO_LENGTHS = [10, 15, 20, 30, 60]
@@ -44,7 +45,9 @@ def check_videos(folder: str = None):
         for filename in [f for f in filenames if f.split(".")[-1].lower() in ALLOWABLE_VIDEO_FORMATS]:
             path = os.path.join(dirpath, filename)
             logging.debug(f"Found video at {path}.")
-            videos.append(path)
+            if not dirpath.split("\\")[-1].startswith("_"):
+                logging.debug(f"Adding video {path}.")
+                videos.append(path)
     info_agg = []
     for video_path in videos:
         video = cv2.VideoCapture(video_path)
@@ -77,6 +80,15 @@ def check_videos(folder: str = None):
             "Passed": passed
         }
         info_agg.append(info)
+        if not passed:
+            logging.debug(f"{path} failed check.")
+            new_folder = os.path.join(folder, "_FailedChecks")
+            if not os.path.isdir(new_folder):
+                logging.warning("_FailedChecks folder not found. Creating now.")
+                os.mkdir(new_folder)
+            new_file_location = os.path.join(new_folder, video_path.split("\\")[-1])
+            logging.debug(f"Moving {path} to {new_file_location}.")
+            shutil.move(path, new_file_location)
     logging.info(json.dumps(info_agg, indent=4))
     df = pd.DataFrame(info_agg)
     failed = df[df["Passed"] == False]
@@ -88,4 +100,4 @@ def check_videos(folder: str = None):
 
 if __name__ == "__main__":
     setup()
-    check_videos()
+    check_videos(r"C:\Users\Austin Ulfers\Desktop\Uploads\Uploads")
