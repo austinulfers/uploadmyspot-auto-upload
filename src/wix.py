@@ -5,18 +5,22 @@ import random
 import time
 import csv
 import os
+import json
 
 URL = "https://manage.wix.com/dashboard/f332cb86-352a-492f-b04e-c963b4475923/database/data/Upload"
 
 class WixClient:
 
     def __init__(self, driver: webdriver.chrome.webdriver.WebDriver = None, folder: str = "tmp"):
-        """Initializes the client and goes to the upload url.
+        """Initializes the client and goes to the upload url. This class is 
+        deprecated and will be removed on the next major release.
 
         Args:
-            driver (webdriver.chrome.webdriver.WebDriver, optional): A chrome webdriver. Defaults to None.
+            driver (webdriver.chrome.webdriver.WebDriver, optional): A chrome 
+                webdriver. Defaults to None.
             folder (str): folder within cwd to store downloaded files.
-        """ 
+        """
+        logging.warn("The wix client is deprecated and will be removed on the next major release.") 
         self.download_folder = folder
         if driver is None:
             options = webdriver.ChromeOptions()
@@ -99,13 +103,18 @@ class WixClient:
                 }
                 for i in range(1, 11):
                     i = str(i)
-                    l = row[f"Length {i}"]
-                    if i == "1" or l != "":
+                    length = row[f"Length {i}"]
+                    title = row[f"Title {i}"]
+                    isci = row[f"ID {i}"]
+                    if title != "" or isci != "":
+                        if length == "":
+                            spot_str = json.dumps(spot, indent=4).split("\n")
+                            raise Exception(f"Spot Number {i} in Upload.csv does not have a length. Client:\n{chr(10).join(spot_str)}.")
                         spot.update({
-                            "Title": row[f"Title {i}"],
+                            "Title": title,
                             "Length": \
-                                "" if not l else "0" + l if l[0] == ":" else l,
-                            "ISCI": row[f"ID {i}"]
+                                "0" + length if length[0] == ":" else length,
+                            "ISCI": isci
                         })
                         all_spots.append(spot.copy())
         return all_spots, filepath

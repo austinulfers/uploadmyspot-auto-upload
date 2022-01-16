@@ -1,30 +1,16 @@
 from wix import WixClient
 from ad_delivery import ComcastClient
 from datetime import datetime
-from setup import setup
+from setup import setup, check_videos
 import configparser
 import logging
 import os
 
 def main():
     """Executes all main functions.
-    """    
-    if not os.path.exists(os.path.join("tmp", "Upload.csv")):
-        wix = WixClient()
-        wix.login(
-            config["CREDENTIALS"]["WIX_USERNAME"], 
-            config["CREDENTIALS"]["WIX_PASSWORD"]
-        )
-        wix.download()
+    """
     all_spots, filepath = WixClient.parse_download()
-
-    if "wix" in locals():
-        # open new tab so the wix content manager stays open
-        wix.driver.execute_script("window.open('');")
-        wix.driver.switch_to.window(wix.driver.window_handles[1])
-        comcast = ComcastClient(wix.driver)
-    else:
-        comcast = ComcastClient()
+    comcast = ComcastClient()
     comcast.login(
         config["CREDENTIALS"]["COMCAST_USERNAME"],
         config["CREDENTIALS"]["COMCAST_PASSWORD"]
@@ -49,6 +35,7 @@ def main():
 if __name__ == "__main__":
     try:
         setup()
+        check_videos()
 
         now = datetime.now().strftime("%d-%m-%Y_%H-%M")
         logging.basicConfig(
