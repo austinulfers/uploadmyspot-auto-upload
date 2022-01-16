@@ -98,7 +98,7 @@ def check_videos(folder: str = None):
             "Frame Count": length,
             "FPS": round(fps, 3),
             "Duration": round(duration, 2),
-            "Remainding or Missing Frames": round(remainder, 2),
+            "Remaining or Missing Frames": round(remainder, 2),
             "Passed": passed
         }
         info_agg.append(info)
