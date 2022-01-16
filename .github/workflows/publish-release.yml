@@ -42,7 +42,7 @@ jobs:
           mkdir log
 
       - name: Zip Necessary Files
-        uses: papeloto/action-zip@v1
+        uses: vimtor/action-zip@v1
         with:
           files: dist/EffectvUpload_${{ env.tag }}.exe config.ini.template README.md
           dest: dist/EffectUpload_${{ env.tag }}.zip
