@@ -3,6 +3,7 @@
 *This automation tool uploads spots to Comcast's AdDelivery portal.*
 
 [![.github/workflows/publish-release.yml](https://github.com/austinulfers/uploadmyspot-auto-upload/actions/workflows/publish-release.yml/badge.svg)](https://github.com/austinulfers/uploadmyspot-auto-upload/actions/workflows/publish-release.yml)
+[![wakatime](https://wakatime.com/badge/github/austinulfers/uploadmyspot-auto-upload.svg)](https://wakatime.com/badge/github/austinulfers/uploadmyspot-auto-upload)
 
 ## Using the Distributable
 
