@@ -88,4 +88,4 @@ def check_videos(folder: str = None):
 
 if __name__ == "__main__":
     setup()
-    check_videos(r"C:\Users\Austin Ulfers\Desktop\Uploads\Uploads")
+    check_videos()
