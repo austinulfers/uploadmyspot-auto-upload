@@ -9,7 +9,19 @@ import os
 def main():
     """Executes all main functions.
     """
-    all_spots, filepath = WixClient.parse_download()
+    for i in range(100):
+        try:
+            logging.debug(f"Attempt #{i} for parse_download.")
+            all_spots, filepath = WixClient.parse_download()
+        except Exception as e:
+            logging.error(e)
+            input("Press enter to reread the file.")
+        else:
+            break
+    else:
+        logging.error("Failed to parse download file.")
+        raise Exception("Ran out of attempts to parse download file.")
+
     comcast = ComcastClient()
     comcast.login(
         config["CREDENTIALS"]["COMCAST_USERNAME"],
@@ -35,7 +47,7 @@ def main():
 if __name__ == "__main__":
     try:
         setup()
-        check_videos()
+        check_videos(r"C:\Users\Austin Ulfers\Desktop\Uploads\Uploads")
 
         now = datetime.now().strftime("%d-%m-%Y_%H-%M")
         logging.basicConfig(
@@ -49,5 +61,6 @@ if __name__ == "__main__":
 
         main()
     except Exception as e:
+        logging.error(e)
         print(e)
         input("Application failed. Read above information to determine root cause.")

@@ -90,7 +90,7 @@ class WixClient:
         csvfile = open(filepath, 'r', encoding='utf-8-sig')
         reader = csv.DictReader(csvfile)
         all_spots = []
-        for row in reader:
+        for index, row in enumerate(reader):
             if row["Completed"] == "":
                 spot = {
                     "Agency": row["Agency"],
@@ -109,7 +109,8 @@ class WixClient:
                     if title != "" or isci != "":
                         if length == "":
                             spot_str = json.dumps(spot, indent=4).split("\n")
-                            raise Exception(f"Spot Number {i} in Upload.csv does not have a length. Client:\n{chr(10).join(spot_str)}.")
+                            csvfile.close()
+                            raise Exception(f"Row: {index + 1}, Spot: {i} in does not have a length. Client:\n{chr(10).join(spot_str)}.")
                         spot.update({
                             "Title": title,
                             "Length": \
@@ -117,4 +118,5 @@ class WixClient:
                             "ISCI": isci
                         })
                         all_spots.append(spot.copy())
+        csvfile.close()
         return all_spots, filepath
