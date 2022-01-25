@@ -6,10 +6,12 @@ import configparser
 import logging
 import os
 
+ATTEMPTS = 100
+
 def main():
     """Executes all main functions.
     """
-    for i in range(100):
+    for i in range(ATTEMPTS):
         try:
             logging.debug(f"Attempt #{i} for parse_download.")
             all_spots, filepath = WixClient.parse_download()
@@ -19,7 +21,7 @@ def main():
         else:
             break
     else:
-        logging.error("Failed to parse download file.")
+        logging.error("Failed to parse download file in given attempts.")
         raise Exception("Ran out of attempts to parse download file.")
 
     comcast = ComcastClient()
@@ -47,7 +49,18 @@ def main():
 if __name__ == "__main__":
     try:
         setup()
-        check_videos(r"C:\Users\Austin Ulfers\Desktop\Uploads\Uploads")
+        for i in range(ATTEMPTS):
+            try:
+                logging.debug(f"Attempt #{i} for check_videos.")
+                check_videos()
+            except Exception as e:
+                logging.error(e)
+                input("Press enter to recheck the videos or continue without them.")
+            else:
+                break
+        else:
+            logging.error("Failed to check_videos in given attempts.")
+            raise Exception("Ran out of attempts to check_videos.")
 
         now = datetime.now().strftime("%d-%m-%Y_%H-%M")
         logging.basicConfig(
