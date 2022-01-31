@@ -7,7 +7,7 @@ import shutil
 
 ALLOWABLE_VIDEO_FORMATS = ["mp4", "mov", "avi", "wmv"]
 ALLOWABLE_VIDEO_LENGTHS = [10, 15, 20, 30, 60]
-ENDING_TOLERANCE = 2
+ENDING_TOLERANCE = 3
 
 def setup():
     """Sets up the application for first time use.
@@ -76,12 +76,22 @@ def check_videos(folder: str = None):
         video_path = video_path.replace(folder, "")
         passed = False
         if round(duration, 0) in ALLOWABLE_VIDEO_LENGTHS and within_tolerance:
-            if round(fps, 2) == 29.97 or round(fps, 3) == 23.976:
-                if width == 1920 and height == 1080:
-                    passed = True
-            elif round(fps, 2) == 59.94:
+            if round(fps, 2) == 59.94:
                 if width == 1280 and height == 720:
                     passed = True
+                else:
+                    print(f"{video_path} has unacceptable width/height.")
+            elif round(fps, 2) == 29.97 or round(fps, 3) == 23.976:
+                if width == 1920 and height == 1080:
+                    passed = True
+                elif width == 1280 and height == 720:
+                    passed = True
+                else:
+                    print(f"{video_path} has unacceptable width/height.")
+            else:
+                print(f"{video_path} has unacceptable frame rate.")
+        else:
+            print(f"{video_path} either not within tolerance or unacceptable video length.")
         if not passed:
             full_path = folder + video_path
             logging.debug(f"{full_path} failed check.")
@@ -112,3 +122,4 @@ def check_videos(folder: str = None):
             
 if __name__ == "__main__":
     setup()
+    check_videos()

@@ -106,11 +106,11 @@ class WixClient:
                     length = row[f"Length {i}"]
                     title = row[f"Title {i}"]
                     isci = row[f"ID {i}"]
+                    spot_str = json.dumps(spot, indent=4).split("\n")
                     if title != "" or isci != "":
                         if length == "":
-                            spot_str = json.dumps(spot, indent=4).split("\n")
                             csvfile.close()
-                            raise Exception(f"Row: {index + 1}, Spot: {i} in does not have a length. Client:\n{chr(10).join(spot_str)}.")
+                            raise Exception(f"Row: {index + 1}, Spot: {i} does not have a length. Client:\n{chr(10).join(spot_str)}.")
                         spot.update({
                             "Title": title,
                             "Length": \
@@ -118,5 +118,8 @@ class WixClient:
                             "ISCI": isci
                         })
                         all_spots.append(spot.copy())
+                    elif title == "" and i == "1":
+                        csvfile.close()
+                        raise Exception(f"Row: {index + 1}, Spot: {i} does not have a title. Client:\n{chr(10).join(spot_str)}.")
         csvfile.close()
         return all_spots, filepath
