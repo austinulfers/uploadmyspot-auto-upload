@@ -16,7 +16,7 @@ def main():
             logging.debug(f"Attempt #{i} for parse_download.")
             all_spots, filepath = WixClient.parse_download()
         except Exception as e:
-            logging.info(e)
+            logging.error(e)
             input("Press enter to reread the file.")
         else:
             break
@@ -52,9 +52,9 @@ if __name__ == "__main__":
         for i in range(ATTEMPTS):
             try:
                 logging.debug(f"Attempt #{i} for check_videos.")
-                check_videos()
+                check_videos(r"C:\Users\Austin Ulfers\Desktop\Upload")
             except Exception as e:
-                logging.error(e)
+                logging.info(e)
             else:
                 break
         else:

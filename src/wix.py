@@ -107,10 +107,21 @@ class WixClient:
                     title = row[f"Title {i}"]
                     isci = row[f"ID {i}"]
                     spot_str = json.dumps(spot, indent=4).split("\n")
-                    if title != "" or isci != "":
+                    if title != "" or isci != "" or length != "":
                         if length == "":
-                            csvfile.close()
-                            raise Exception(f"Row: {index + 1}, Spot: {i} does not have a length. Client:\n{chr(10).join(spot_str)}.")
+                            print(f"Row: {index + 1}, Spot: {i} does not have a length. Client:\n{chr(10).join(spot_str)}.")
+                            print(f"Title: {title}, ISCI: {isci}")
+                            length = input("Enter a length in 0:00 format or 'R' to recheck:").strip()
+                            if str.upper(length) == "R":
+                                csvfile.close()
+                                raise Exception("User has chosen to recheck the file.")
+                        if title == "":
+                            print(f"Row: {index + 1}, Spot: {i} does not have a title. Client:\n{chr(10).join(spot_str)}.")
+                            print(f"Length: {length}, ISCI: {isci}")
+                            title = input("Enter a title or 'R' to recheck:").strip()
+                            if str.upper(title) == "R":
+                                csvfile.close()
+                                raise Exception("User has chosen to recheck the file.")
                         spot.update({
                             "Title": title,
                             "Length": \
@@ -118,8 +129,5 @@ class WixClient:
                             "ISCI": isci
                         })
                         all_spots.append(spot.copy())
-                    elif title == "" and i == "1":
-                        csvfile.close()
-                        raise Exception(f"Row: {index + 1}, Spot: {i} does not have a title. Client:\n{chr(10).join(spot_str)}.")
         csvfile.close()
         return all_spots, filepath
