@@ -5,7 +5,7 @@ import json
 import pandas as pd
 import shutil
 
-ALLOWABLE_VIDEO_FORMATS = ["mp4", "mov", "avi", "wmv"]
+ALLOWABLE_VIDEO_FORMATS = ["mp4", "mov", "wmv", "mpg"]
 ALLOWABLE_VIDEO_LENGTHS = [10, 15, 20, 30, 60]
 ENDING_TOLERANCE = 3
 
@@ -118,7 +118,9 @@ def check_videos(folder: str = None):
     if not failed.empty:
         with pd.option_context('display.max_colwidth', -1):
             df_str = failed.to_string().split("\n")
-            raise Exception(f"The Following Videos Failed the Checks:\n{chr(10).join(df_str)}")
+            error_str = f"The Following Videos Failed the Checks:\n{chr(10).join(df_str)}"
+            print(error_str)
+            raise Exception(error_str)
             
 if __name__ == "__main__":
     setup()

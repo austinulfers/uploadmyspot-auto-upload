@@ -55,6 +55,7 @@ if __name__ == "__main__":
                 check_videos(r"C:\Users\Austin Ulfers\Desktop\Upload")
             except Exception as e:
                 logging.info(e)
+                input("Press enter to recheck all videos.")
             else:
                 break
         else:
