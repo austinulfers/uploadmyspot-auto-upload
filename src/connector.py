@@ -55,6 +55,7 @@ if __name__ == "__main__":
                 check_videos()
             except Exception as e:
                 logging.error(e)
+                input("Press enter to recheck all videos.")
             else:
                 break
         else:
