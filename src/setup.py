@@ -7,7 +7,7 @@ import shutil
 
 ALLOWABLE_VIDEO_FORMATS = ["mp4", "mov", "wmv", "mpg"]
 ALLOWABLE_VIDEO_LENGTHS = [10, 15, 20, 30, 60]
-ENDING_TOLERANCE = 3
+FRAME_TOLERANCE = 3
 
 def setup():
     """Sets up the application for first time use.
@@ -35,7 +35,7 @@ def setup():
         logging.fatal("tmp/Upload.csv not found.")
         raise Exception("'tmp/Upload.csv' file not found.")
 
-def check_videos(folder: str = None):
+def check_videos(folder: str = None, allowed_video_formats: list = ALLOWABLE_VIDEO_FORMATS, allowed_video_lengths: list = ALLOWABLE_VIDEO_LENGTHS, frame_tolerance: int = FRAME_TOLERANCE):
     """Checks the videos in the above directory and if they don't pass, they get
     relocated to the failed videos folder that is created if it doesn't already
     exist.
@@ -43,6 +43,12 @@ def check_videos(folder: str = None):
     Args:
         folder (str, optional): Folder to look for videos. Defaults to directory
             above current working directory.
+        allowed_video_formats (list, optional): List of video formats to look 
+            for. Defaults to ALLOWABLE_VIDEO_FORMATS.
+        allowed_video_lengths (list, optional): List of video lengths to look 
+            for. Defaults to ALLOWABLE_VIDEO_LENGTHS.
+        frame_tolerance (int, optional): Number of seconds to allow for the 
+            video to end. Defaults to FRAME_TOLERANCE.
 
     Raises:
         Exception: Occurs when any video doesn't pass the specs.
@@ -53,7 +59,7 @@ def check_videos(folder: str = None):
     print(f"Checking videos in {folder}.")
     videos = []
     for dirpath, dirnames, filenames in os.walk(folder):
-        for filename in [f for f in filenames if f.split(".")[-1].lower() in ALLOWABLE_VIDEO_FORMATS]:
+        for filename in [f for f in filenames if f.split(".")[-1].lower() in allowed_video_formats]:
             path = os.path.join(dirpath, filename)
             logging.debug(f"Found video at {path}.")
             if not dirpath.split("\\")[-1].startswith("_"):
@@ -72,10 +78,10 @@ def check_videos(folder: str = None):
         remainder = length % fps
         if remainder > (fps / 2):
             remainder = remainder - fps
-        within_tolerance = -ENDING_TOLERANCE < remainder < ENDING_TOLERANCE
-        video_path = video_path.replace(folder, "")
+        within_tolerance = -frame_tolerance < remainder < frame_tolerance
+        # video_path = video_path.replace(folder, "")
         passed = False
-        if round(duration, 0) in ALLOWABLE_VIDEO_LENGTHS and within_tolerance:
+        if round(duration, 0) in allowed_video_lengths and within_tolerance:
             if round(fps, 2) == 59.94:
                 if width == 1280 and height == 720:
                     passed = True
@@ -93,15 +99,15 @@ def check_videos(folder: str = None):
         else:
             print(f"{video_path} either not within tolerance or unacceptable video length.")
         if not passed:
-            full_path = folder + video_path
-            logging.debug(f"{full_path} failed check.")
-            new_folder = os.path.join(os.path.dirname(full_path), "_Failed")
+            # full_path = folder + video_path
+            logging.debug(f"{video_path} failed check.")
+            new_folder = os.path.join(os.path.dirname(video_path), "_Failed")
             if not os.path.isdir(new_folder):
                 logging.info(f"_Failed folder not found. Creating here {new_folder}.")
                 os.mkdir(new_folder)
             new_file_location = os.path.join(new_folder, video_path.split("\\")[-1])
-            logging.debug(f"Moving {full_path} to {new_file_location}.")
-            shutil.move(full_path, new_file_location)
+            logging.debug(f"Moving {video_path} to {new_file_location}")
+            shutil.move(video_path, new_file_location)
         info = {
             "Path": video_path,
             "Dimensions": dimensions,
@@ -114,12 +120,13 @@ def check_videos(folder: str = None):
         info_agg.append(info)
     logging.info(json.dumps(info_agg, indent=4))
     df = pd.DataFrame(info_agg)
-    failed = df[df["Passed"] == False]
+    if df.empty:
+        raise FileNotFoundError(f"No videos found in {folder}.")
+    failed = df.query("~Passed")
     if not failed.empty:
         with pd.option_context('display.max_colwidth', -1):
             df_str = failed.to_string().split("\n")
             error_str = f"The Following Videos Failed the Checks:\n{chr(10).join(df_str)}"
-            print(error_str)
             raise Exception(error_str)
             
 if __name__ == "__main__":

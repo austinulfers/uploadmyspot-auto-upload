@@ -82,7 +82,7 @@ class ComcastClient:
             "additionalRecipients_submit_input"
         ).clear()
 
-    def upload(self, client: str, title: str, duration: str, agency: str = "NA", brand: str = "NA", description: str = "", destination: str = "All Effectv Ops Centers (HD Only)", isci: str = "", recipients: list = [], spot: str = None):
+    def upload(self, client: str, title: str, duration: str, agency: str = "NA", brand: str = "NA", description: str = "", destination: str = "All Effectv Ops Centers (HD Only)", isci: str = "", recipients: list = [], default_recipient: str = None, spot: str = None):
         """Uploads a commercial spot with all the specified information.
 
         Args:
@@ -95,6 +95,7 @@ class ComcastClient:
             destination (str, optional): spot destination. Defaults to "All Effectv Ops Centers (HD Only)".
             isci (str, optional): spot id in isci or ad code. Defaults to "".
             recipients (list, optional): who to notify when spot upload completes. Defaults to [].
+            default_recipient (str, optional): who to notify when spot upload completes. Defaults to None.
             spot (str): filepath to the spot. Defaults to None.
         """
         self.driver.implicitly_wait(5)        
@@ -135,6 +136,7 @@ class ComcastClient:
         self.driver.find_element_by_id(
             "description_submit_input"
         ).send_keys(description)
+        recipients.add(default_recipient)
         self.driver.find_element_by_id(
             "additionalRecipients_submit_input"
         ).send_keys(", ".join(recipients))
