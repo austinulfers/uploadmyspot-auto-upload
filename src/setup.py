@@ -67,6 +67,7 @@ def check_videos(folder: str = None, allowed_video_formats: list = ALLOWABLE_VID
                 videos.append(path)
     info_agg = []
     for video_path in videos:
+        logging.debug(f"Checking video at {video_path}.")
         video = cv2.VideoCapture(video_path)
         fps = video.get(cv2.CAP_PROP_FPS)
         height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))

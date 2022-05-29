@@ -7,6 +7,7 @@ import logging
 import os
 import traceback
 import json
+import time
 
 ATTEMPTS = 100
 
@@ -31,6 +32,7 @@ def main():
         config["CREDENTIALS"]["COMCAST_USERNAME"],
         config["CREDENTIALS"]["COMCAST_PASSWORD"]
     )
+    time.sleep(float(config["SETUP"]["LOGIN_DELAY"]))
     num_spots = len(all_spots)
     for i, spot in enumerate(all_spots):
         if not spot["Agency"]:
