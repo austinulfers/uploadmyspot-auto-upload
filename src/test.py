@@ -1,3 +1,4 @@
+from tkinter import E
 from wix import WixClient
 from ad_delivery import ComcastClient
 from datetime import datetime
@@ -18,8 +19,10 @@ def main():
         try:
             logging.debug(f"Attempt #{i} for parse_download.")
             all_spots, filepath = WixClient.parse_download()
-        except Exception as e:
-            logging.info(e)
+        except Exception:
+            trace = traceback.format_exc()
+            logging.info(trace)
+            print(trace)
             input("Press enter to reread the file.")
         else:
             break

@@ -1,3 +1,4 @@
+from typing import Type
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 import logging
@@ -101,33 +102,35 @@ class WixClient:
                     "Additional Recipients": \
                         list(filter(None, [row["Email 1"], row["Email 2"]]))
                 }
-                for i in range(1, 11):
+                # Assumed 9/4/2022 that there would never be a situation where
+                #   spot information isn't filled in in numeric order.
+                try:
+                    num_spots = int(row["SpotNumbers"])
+                except Exception:
+                    num_spots = 1
+                for i in range(num_spots, 11):
+                    i = str(i)
+                    length = row[f"Length {i}"]
+                    title = row[f"Title {i}"]
+                    isci = row[f"ID {i}"]
+                    if title == "" and isci == "" and length == "":
+                        break
+                    num_spots += 1
+                for i in range(1, min(num_spots + 1, 11)):
                     i = str(i)
                     length = row[f"Length {i}"]
                     title = row[f"Title {i}"]
                     isci = row[f"ID {i}"]
                     spot_str = json.dumps(spot, indent=4).split("\n")
-                    if title != "" or isci != "" or length != "":
-                        if length == "":
-                            print(f"Row: {index + 1}, Spot: {i} does not have a length. Client:\n{chr(10).join(spot_str)}.")
-                            print(f"Title: {title}, ISCI: {isci}")
-                            length = input("Enter a length in 0:00 format or 'R' to recheck:").strip()
-                            if str.upper(length) == "R":
-                                csvfile.close()
-                                raise Exception("User has chosen to recheck the file.")
-                        if title == "":
-                            print(f"Row: {index + 1}, Spot: {i} does not have a title. Client:\n{chr(10).join(spot_str)}.")
-                            print(f"Length: {length}, ISCI: {isci}")
-                            title = input("Enter a title or 'R' to recheck:").strip()
-                            if str.upper(title) == "R":
-                                csvfile.close()
-                                raise Exception("User has chosen to recheck the file.")
-                        spot.update({
-                            "Title": title,
-                            "Length": \
-                                "0" + length if length[0] == ":" else length,
-                            "ISCI": isci
-                        })
-                        all_spots.append(spot.copy())
+                    if length == "":
+                        print(f"Row: {index + 1}, Spot: {i} does not have a length. Client:\n{chr(10).join(spot_str)}.")
+                    if title == "":
+                        print(f"Row: {index + 1}, Spot: {i} does not have a title. Client:\n{chr(10).join(spot_str)}.")
+                    spot.update({
+                        "Title": title,
+                        "Length": length,
+                        "ISCI": isci
+                    })
+                    all_spots.append(spot.copy())
         csvfile.close()
         return all_spots, filepath
