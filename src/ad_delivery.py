@@ -161,6 +161,7 @@ class ComcastClient:
         """        
         assert ":" in duration, "Duration format error (mm:ss)."
         assert duration.count(":") == 1, "Duration format error (mm:ss)."
+        duration = "0" + duration if duration[0] == ":" else duration
         split = duration.split(":")
         seconds = int(split[0]) * 60 + int(split[1])
         assert seconds % 5 == 0, "Duration number error."
@@ -175,6 +176,6 @@ class ComcastClient:
         elif seconds <= 300:
             return str(int(seconds / 30 + 4))
         else:
-            raise Exception(
-                f"Unkown problem exists with duration number: {duration}"
+            raise NotImplementedError(
+                f"Unknown problem exists with duration number: {duration}"
             )
