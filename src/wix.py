@@ -108,7 +108,7 @@ class WixClient:
                     num_spots = int(row["SpotNumbers"])
                 except Exception:
                     num_spots = 1
-                for i in range(num_spots, 11):
+                for i in range(num_spots + 1, 11):
                     i = str(i)
                     length = row[f"Length {i}"]
                     title = row[f"Title {i}"]
