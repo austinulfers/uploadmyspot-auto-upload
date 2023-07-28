@@ -1,6 +1,6 @@
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-import logging
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 import time
 import os
 
@@ -16,6 +16,7 @@ class ComcastClient:
             folder (str): folder within cwd to store downloaded files.
         """ 
         if driver is None:
+            service = Service()
             options = webdriver.ChromeOptions()
             prefs = {
                 "download.default_directory" : os.path.join(os.getcwd(), folder)
@@ -24,8 +25,8 @@ class ComcastClient:
             options.add_argument('log-level=3')
             options.add_argument("--start-maximized")
             self.driver = webdriver.Chrome(
-                ChromeDriverManager().install(), 
-                chrome_options=options
+                service=service,
+                options=options
             )
         else:
             self.driver = driver
@@ -41,15 +42,9 @@ class ComcastClient:
         count = 5
         while count > 0:
             try:      
-                self.driver.find_element_by_id(
-                    "email_login_input"
-                ).send_keys(user)
-                self.driver.find_element_by_id(
-                    "password_login_input"
-                ).send_keys(pword)
-                self.driver.find_element_by_id(
-                    "login_login_button"
-                ).click()
+                self.driver.find_element(By.ID, "email_login_input").send_keys(user)
+                self.driver.find_element(By.ID, "password_login_input").send_keys(pword)
+                self.driver.find_element(By.ID, "login_login_button").click()
                 break
             except:
                 print(f"Login Page Not Found. {str(count)} attempts remaining.")
@@ -60,27 +55,13 @@ class ComcastClient:
     def clear(self):
         """Clears all text input fields on upload page.
         """        
-        self.driver.find_element_by_id(
-            "clientName_submit_input"
-        ).clear()
-        self.driver.find_element_by_id(
-            "agencyName_submit_input"
-        ).clear()
-        self.driver.find_element_by_id(
-            "brandName_submit_input"
-        ).clear()
-        self.driver.find_element_by_id(
-            "title_submit_input"
-        ).clear()
-        self.driver.find_element_by_id(
-            "notRequiredIsci_submit_input"
-        ).clear()
-        self.driver.find_element_by_id(
-            "description_submit_input"
-        ).clear()
-        self.driver.find_element_by_id(
-            "additionalRecipients_submit_input"
-        ).clear()
+        self.driver.find_element(By.ID, "clientName_submit_input").clear()
+        self.driver.find_element(By.ID, "agencyName_submit_input").clear()
+        self.driver.find_element(By.ID, "brandName_submit_input").clear()
+        self.driver.find_element(By.ID, "title_submit_input").clear()
+        self.driver.find_element(By.ID, "notRequiredIsci_submit_input").clear()
+        self.driver.find_element(By.ID, "duration_submit_select").click()
+        self.driver.find_element(By.ID, "duration_0_submit_option").click()
 
     def upload(self, client: str, title: str, duration: str, agency: str = "NA", brand: str = "NA", description: str = "", destination: str = "All Effectv Ops Centers (HD Only)", isci: str = "", recipients: list = [], default_recipient: str = None, spot: str = None):
         """Uploads a commercial spot with all the specified information.
@@ -99,51 +80,27 @@ class ComcastClient:
             spot (str): filepath to the spot. Defaults to None.
         """
         self.driver.implicitly_wait(5)        
-        self.driver.find_element_by_id(
-            "clientName_submit_input"
-        ).send_keys(client)
-        self.driver.find_element_by_id(
-            "agencyName_submit_input"
-        ).send_keys(agency)
-        self.driver.find_element_by_id(
-            "brandName_submit_input"
-        ).send_keys(brand)
-        self.driver.find_element_by_id(
-            "title_submit_input"
-        ).send_keys(title)
-        self.driver.find_element_by_id(
-            "notRequiredIsci_submit_input"
-        ).send_keys(isci)
-        self.driver.find_element_by_id(
-            "destination_submit_select"
-        ).click()
-        self.driver.find_element_by_id(
-            "destination_0_submit_option"
-        ).click()
+        self.driver.find_element(By.ID, "clientName_submit_input").send_keys(client)
+        self.driver.find_element(By.ID, "agencyName_submit_input").send_keys(agency)
+        self.driver.find_element(By.ID, "brandName_submit_input").send_keys(brand)
+        self.driver.find_element(By.ID, "title_submit_input").send_keys(title)
+        self.driver.find_element(By.ID, "notRequiredIsci_submit_input").send_keys(isci)
+        self.driver.find_element(By.ID, "destination_submit_select").click()
+        self.driver.find_element(By.ID, "destination_0_submit_option").click()
         if duration != "":
-            self.driver.find_element_by_id(
-                "duration_submit_select"
-            ).click()
+            self.driver.find_element(By.ID, "duration_submit_select").click()
             if duration == "Other":
                 duration_number = "2"
             else:
                 duration_number = self._duration_option(duration)
             time.sleep(0.5)
             self.driver.implicitly_wait(2)
-            self.driver.find_element_by_id(
-                f"duration_{duration_number}_submit_option"
-            ).click()
-        self.driver.find_element_by_id(
-            "description_submit_input"
-        ).send_keys(description)
+            self.driver.find_element(By.ID, f"duration_{duration_number}_submit_option").click()
+        self.driver.find_element(By.ID, "description_submit_input").send_keys(description)
         recipients.add(default_recipient)
-        self.driver.find_element_by_id(
-            "additionalRecipients_submit_input"
-        ).send_keys(", ".join(recipients))
+        self.driver.find_element(By.ID, "additionalRecipients_submit_input").send_keys(", ".join(recipients))
         if spot is not None:
-            self.driver.find_element_by_id(
-                "fileInput"
-            ).send_keys(spot)
+            self.driver.find_element(By.ID, "fileInput").send_keys(spot)
 
     def _duration_option(self, duration: str) -> str:
         """Returns the duration option from the dropdown menu of the spot upload

@@ -1,6 +1,7 @@
 from typing import Type
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 import logging
 import random
 import time
@@ -24,6 +25,7 @@ class WixClient:
         logging.warn("The wix client is deprecated and will be removed on the next major release.") 
         self.download_folder = folder
         if driver is None:
+            service = Service()
             options = webdriver.ChromeOptions()
             prefs = {
                 "download.default_directory" : os.path.join(os.getcwd(), folder)
@@ -32,8 +34,8 @@ class WixClient:
             options.add_argument('log-level=3')
             options.add_argument("--start-maximized")
             self.driver = webdriver.Chrome(
-                ChromeDriverManager().install(), 
-                chrome_options=options
+                service=service, 
+                options=options
             )
         else:
             self.driver = driver
@@ -46,27 +48,18 @@ class WixClient:
             user (str): username
             pword (str): password
         """        
-        self.driver.find_element_by_xpath('//*[@id="input_0"]').send_keys(user)
-        self.driver.find_element_by_xpath('//*[@id="input_1"]').send_keys(pword)
-        self.driver.find_element_by_xpath(
-            "/html/body/login-dialog/div/login/div/form/div[3]/div[1]/div[3]/div/button"
-        ).click()
+        self.driver.find_element(By.XPATH, '//*[@id="input_0"]').send_keys(user)
+        self.driver.find_element(By.XPATH, '//*[@id="input_1"]').send_keys(pword)
+        self.driver.find_element(By.XPATH, "/html/body/login-dialog/div/login/div/form/div[3]/div[1]/div[3]/div/button").click()
         input("Press enter once logged in to continue.")
 
     def download(self):
         """Downloads the data from content manager as a csv document.
         """        
         self.driver.implicitly_wait(10)
-        self.driver.find_element_by_xpath(
-            '//*[@id="root"]/div/div/div[2]/div/div[1]/div/div/div/div/div/div[1]/div/header/div[2]/div[2]/div[1]/div/button'
-            
-        ).click()
-        self.driver.find_element_by_xpath(
-            '/html/body/div[7]/div/div/div/ul/li[2]/span'
-        ).click()
-        self.driver.find_element_by_xpath(
-            '/html/body/div[8]/div/div/div/div/div/div[3]/form/button'
-        ).click()
+        self.driver.find_element(By.XPATH, '//*[@id="root"]/div/div/div[2]/div/div[1]/div/div/div/div/div/div[1]/div/header/div[2]/div[2]/div[1]/div/button').click()
+        self.driver.find_element(By.XPATH, '/html/body/div[7]/div/div/div/ul/li[2]/span').click()
+        self.driver.find_element(By.XPATH, '/html/body/div[8]/div/div/div/div/div/div[3]/form/button').click()
 
     @staticmethod
     def parse_download(filepath: str = "tmp//Upload.csv", remove: bool = False) -> list:        
