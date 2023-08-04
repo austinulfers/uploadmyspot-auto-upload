@@ -6,7 +6,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     env:
-      tag: v1.1.12
+      tag: v1.1.13
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
           pip install pyinstaller
       
       - name: Create Executable
-        run: pyinstaller --onefile src/connector.py --name EffectvUpload_${{ env.tag }} --icon img/logo.ico
+        run: pyinstaller src/connector.py --name EffectvUpload_${{ env.tag }} --icon img/logo.ico
 
       - name: Create Directories
         run: |
@@ -44,7 +44,7 @@ jobs:
       - name: Zip Necessary Files
         uses: vimtor/action-zip@v1
         with:
-          files: dist/EffectvUpload_${{ env.tag }}.exe config.ini.template README.md
+          files: dist/EffectvUpload_${{ env.tag }} config.ini.template README.md
           dest: dist/EffectUpload_${{ env.tag }}.zip
 
       - name: Publish a New Release
@@ -52,6 +52,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: dist/EffectUpload_${{ env.tag }}.zip, dist/EffectvUpload_${{ env.tag }}.exe
+          artifacts: dist/EffectUpload_${{ env.tag }}.zip
           tag: ${{ env.tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
