@@ -88,7 +88,7 @@ def check_videos(folder: str = None, allowed_video_formats: list = ALLOWABLE_VID
                     passed = True
                 else:
                     print(f"{video_path} has unacceptable width/height.")
-            elif round(fps, 2) == 29.97 or round(fps, 3) == 23.976:
+            elif round(fps, 2) == 29.97 or round(fps, 3) == 23.976 or round(fps, 3) == 24.0:
                 if width == 1920 and height == 1080:
                     passed = True
                 elif width == 1280 and height == 720:
